@@ -54,7 +54,7 @@ void EchoReceivedData(){
 /* read CAN frames from CAN interface and write it to the pty */
 // from https://github.com/linux-can/can-utils/blob/master/slcanpty.c
 void sendCANtoClient(CAN_frame_t frame, int *tstamp){
-	char cmd;   // hier wird der String gesendet
+	char cmd;   // the string to send
 #define SLC_MTU (sizeof("T1111222281122334455667788EA5F\r") + 1)    // maximale Variante
 	char buf[SLC_MTU];
 	
@@ -176,13 +176,6 @@ rx_restart:
 
 	cmd = buf[0];
 	buf[nbytes] = 0;
-
-	/*for (tmp = 0; tmp < nbytes; tmp++)
-		if (buf[tmp] == '\r')
-			pr_debug("@");
-		else
-			pr_debug("%c", buf[tmp]);
-	pr_debug("\n");*/
 
 	/* check for filter configuration commands */
 	if (cmd == 'm' || cmd == 'M') {
@@ -338,7 +331,7 @@ rx_restart:
 
 	ESP32Can.CANWriteFrame(&frame);
     workOnCAN(&frame);
-    printCANframe(&frame);  // debug
+    //printCANframe(&frame);  // debug
 
 rx_out_ack:
 	replybuf[0] = '\r';

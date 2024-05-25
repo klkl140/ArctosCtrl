@@ -1,4 +1,4 @@
-Arctos CAN Wifi interface 
+ArctosCtrl, a CAN Wifi interface 
 
 working
 -connnect to a Wifi automatically, configure everything over Wifi access point

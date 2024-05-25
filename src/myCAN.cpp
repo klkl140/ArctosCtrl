@@ -14,12 +14,12 @@ void setupCAN(void){
   ESP32Can.CANInit();
 }
 
-// gibt true zurueck wenn sich die PWM veraendert hat
+// returns true if the PWM has changed
 void workOnCAN(CAN_frame_t *rx_frame){
-  if(rx_frame->MsgID == 0x007){ // PWM
+  if(rx_frame->MsgID == 0x007){ // a command for the gripper
       if( (rx_frame->FIR.B.DLC==0) || (rx_frame->FIR.B.RTR == CAN_RTR) ){
-        // leere oder RTR messages werden mit dem aktuellen Wert beantwortet
-        CAN_frame_t tx_frame={0}; // initialisierung ist wichtig, sonst sind die Bits zufaellig
+        // empty or RTR messages are returned with the actual value
+        CAN_frame_t tx_frame={0}; // init of frame is important, otherwhise the bit are random
         tx_frame.MsgID = 0x007;
         tx_frame.FIR.B.DLC = 1;
         tx_frame.data.u8[0] = actCANdata.servo1;
@@ -51,27 +51,8 @@ void loopCAN(void){
   
     workOnCAN(&rx_frame);
 
-    sendCANtoClient(rx_frame);  // alles empfangene evtl an einen Client senden
+    sendCANtoClient(rx_frame);  // all received msgs might be send to a connected client
   }
-  
-  /* // regelmaessig etwas senden
-  const int kInterval = 1000;
-  if (currentMillis - previousMillis >= kInterval) {
-    previousMillis = currentMillis;
-    CAN_frame_t tx_frame;
-    tx_frame.FIR.B.FF = CAN_frame_std;
-    tx_frame.MsgID = 0x111;
-    tx_frame.FIR.B.DLC = 8;
-    tx_frame.data.u8[0] = 0x00;
-    tx_frame.data.u8[1] = 0x01;
-    tx_frame.data.u8[2] = 0x02;
-    tx_frame.data.u8[3] = 0x03;
-    tx_frame.data.u8[4] = 0x04;
-    tx_frame.data.u8[5] = 0x05;
-    tx_frame.data.u8[6] = 0x06;
-    tx_frame.data.u8[7] = 0x07;
-    ESP32Can.CANWriteFrame(&tx_frame);
-  }*/
 }
 
 void printCANframe(CAN_frame_t *rx_frame){

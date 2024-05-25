@@ -1,4 +1,4 @@
-// Arctos Ctrl
+// ArctosCtrl
 
 #include <Arduino.h>
 #include "Arctos.h"
@@ -15,7 +15,6 @@
 extern AutoConnect portal;
 
 String GetMyNodeName(void) {
-  // die MAC Adresse wird aus einer Chip-Kennzahl und der ChipID gebildet
   String nodeName = "Arctos_" + WiFi.macAddress();
   nodeName.replace(":", "");
   return nodeName;
@@ -25,14 +24,14 @@ void outputChanges(){
   if(actCANdata.servo1Changed){
     servo1.write(actCANdata.servo1);
     lineVal[2] = String(actCANdata.servo1);
-    drawDisplay();                        // und aufs Display
+    drawDisplay();
     actCANdata.servo1Changed = false;
   }
 }
 
 void setup(){
   Serial.begin(115200);
-  Serial.println("Arctos CAN 1.0");
+  Serial.println("ArctosCtrl 1.0");
   
   Serial.println("starting Autoconnect");
   setupAutoconnect();
@@ -42,7 +41,7 @@ void setup(){
   setupCAN();
   setupCANServer();
 
-  drawDisplay(); // einmal die aktuellen Werte schreiben
+  drawDisplay(); // show the actual values once
   Serial.println("setup() complete");
 }
 
@@ -51,7 +50,7 @@ void loop(){
   outputChanges();
 
   portal.handleClient();
-  checkForCANServerConnections(); // evtl. neue Verbindung aufbauen
+  checkForCANServerConnections(); // maybe make a new connection
   sl2can();
 }
 
