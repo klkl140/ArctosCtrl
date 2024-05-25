@@ -1,4 +1,4 @@
-// Arctos CAN
+// Arctos Ctrl
 
 #include <Arduino.h>
 #include "Arctos.h"
