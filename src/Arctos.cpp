@@ -32,12 +32,15 @@ void outputChanges(){
 void setup(){
   Serial.begin(115200);
   Serial.println("ArctosCtrl 1.0");
+  lineVal[0] = "ArctosCtrl 1.0";
+
+  setupDisplay(); // zuerst das Display, Autoconnect kann dauern
   
   Serial.println("starting Autoconnect");
   setupAutoconnect();
-
+  lineVal[1] = WiFi.localIP().toString();
+  
   setupServo();
-  setupDisplay();
   setupCAN();
   setupCANServer();
 
