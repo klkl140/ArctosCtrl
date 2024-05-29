@@ -13,9 +13,10 @@ void setupCANServer(){
 }
 
 WiFiClient RemoteClient;
-bool isConnected = false;
+bool isCANServerConnected = false;
  
-void checkForCANServerConnections(){
+bool checkForCANServerConnections(){
+  bool changed = false;
   if (Server.hasClient()){
     // If we are already connected to another computer, 
     // then reject the new connection. Otherwise accept the connection. 
@@ -25,14 +26,17 @@ void checkForCANServerConnections(){
     } else {
       Serial.println("Connection accepted");
       RemoteClient = Server.available();
-      isConnected = true;
+      isCANServerConnected = true;
+	  changed = true;
     }
   } else {
-    if(!RemoteClient.connected() && isConnected){
+    if(!RemoteClient.connected() && isCANServerConnected){
         Serial.println("connection lost");
-        isConnected = false;
+        isCANServerConnected = false;
+		changed = true;
     }
  }
+ return changed;
 }
 
 void SendHalloValue(){

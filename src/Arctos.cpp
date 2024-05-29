@@ -31,9 +31,9 @@ void outputChanges(){
 
 void setup(){
   Serial.begin(115200);
-  Serial.println("ArctosCtrl 1.0");
-  lineVal[0] = "ArctosCtrl 1.0";
-
+  lineVal[0] = "ArctosCtrl 1.0";    // Anzeige auf dem Display
+  Serial.println(lineVal[0]);
+  
   setupDisplay(); // zuerst das Display, Autoconnect kann dauern
   
   Serial.println("starting Autoconnect");
@@ -53,7 +53,14 @@ void loop(){
   outputChanges();
 
   portal.handleClient();
-  checkForCANServerConnections(); // maybe make a new connection
+  if(checkForCANServerConnections()){ // something changed
+    if(isCANServerConnected){
+      lineVal[0] = "CANserver on";
+    } else {
+      lineVal[0] = "CANserver off";
+    } 
+    drawDisplay();
+  }
   sl2can();
 }
 

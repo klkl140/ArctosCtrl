@@ -3,8 +3,11 @@
 // first setup
 void setupCANServer();
 
+extern bool isCANServerConnected;
+
 //serves a request for a new CAN connection
-void checkForCANServerConnections();
+// returns true if something has changed
+bool checkForCANServerConnections();
 
 // send a msg via CAN in slcan format if connected
 void sendCANtoClient(CAN_frame_t frame, int *tstamp=0);
