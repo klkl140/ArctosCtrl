@@ -120,8 +120,8 @@ int sl2can()
 	static char buf[200];
 	char replybuf[10]; /* for answers to received commands */
 	unsigned int ptr;
-	int *is_open;       // Port offen oder geschlossen, noch nicht benutzt
-    int *tstamp;        // Timestamp ein/aus, noch nicht benutzt
+	int is_open;       // Port offen oder geschlossen, noch nicht benutzt
+    int tstamp;        // Timestamp ein/aus, noch nicht benutzt
     //struct can_filter *fi;
     CAN_frame_t frame;   //der wird evtl. gesendet
     
@@ -144,7 +144,7 @@ int sl2can()
 		return 1;
 	}
 
-	Serial.print("received " + String(ret) + " Bytes :");
+	Serial.print("received " + String(ret) + " Bytes:");
     for(int lauf=0; lauf<ret; lauf++){Serial.print(buf[rxoffset+lauf]);}
     Serial.println();
     nbytes = ret;
@@ -190,7 +190,7 @@ rx_restart:
 
 	/* check for timestamp on/off command */
 	if (cmd == 'Z') {
-		*tstamp = buf[1] & 0x01;
+		tstamp = buf[1] & 0x01;
 		ptr = 2;
 		goto rx_out_ack;
 	}
@@ -199,7 +199,7 @@ rx_restart:
 	if (cmd == 'O') {
 		//setsockopt(socket, SOL_CAN_RAW, CAN_RAW_FILTER, fi, sizeof(struct can_filter));
 		ptr = 1;
-		*is_open = 1;
+		is_open = 1;
 		goto rx_out_ack;
 	}
 
@@ -207,7 +207,7 @@ rx_restart:
 	if (cmd == 'C') {
 		//setsockopt(socket, SOL_CAN_RAW, CAN_RAW_FILTER, NULL, 0);
 		ptr = 1;
-		*is_open = 0;
+		is_open = 0;
 		goto rx_out_ack;
 	}
 
@@ -345,11 +345,7 @@ rx_out_nack:
 	replybuf[0] = '\a';
 	tmp = 1;
 rx_out:
-#if 0
-	ret = write(pty, replybuf, tmp);
-#else
-    RemoteClient.write(replybuf, tmp);
-#endif
+    ret = RemoteClient.write(replybuf, tmp);
 	if (ret < 0) {
 		perror("write pty replybuf");
 		return 1;
